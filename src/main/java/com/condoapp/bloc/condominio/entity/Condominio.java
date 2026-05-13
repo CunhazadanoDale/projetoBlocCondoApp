@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
-@Table(name = "condominio")
+@Table(name = "tb_condominio")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class Condominio {
     @Size(max = 60)
     private String nomeCondominio;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 14, unique = true)
     private String cnpjCondominio;
 
     @Embedded
