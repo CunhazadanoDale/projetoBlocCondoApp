@@ -1,6 +1,6 @@
-package com.condoapp.bloc.conta.entity;
+package com.condoapp.bloc.auth.entity;
 
-import com.condoapp.bloc.conta.enums.Role;
+import com.condoapp.bloc.auth.enums.Role;
 import com.condoapp.bloc.morador.entity.Morador;
 import com.condoapp.bloc.prestador.entity.Prestador;
 import jakarta.persistence.*;
