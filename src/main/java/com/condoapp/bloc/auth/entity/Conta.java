@@ -1,6 +1,8 @@
 package com.condoapp.bloc.conta.entity;
 
 import com.condoapp.bloc.conta.enums.Role;
+import com.condoapp.bloc.morador.entity.Morador;
+import com.condoapp.bloc.prestador.entity.Prestador;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -39,4 +41,10 @@ public class Conta {
 
     @CreationTimestamp
     private LocalDateTime criadoEm;
+
+    @OneToOne(mappedBy = "conta")
+    private Morador morador;
+
+    @OneToOne(mappedBy = "conta")
+    private Prestador prestador;
 }

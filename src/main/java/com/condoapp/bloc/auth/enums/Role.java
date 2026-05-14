@@ -1,4 +1,4 @@
-package com.condoapp.bloc.conta.enums;
+package com.condoapp.bloc.auth.enums;
 
 public enum Role {
     MORADOR,
