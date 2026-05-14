@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -44,7 +45,7 @@ public class Condominio {
     private Boolean ativo;
 
     @CreationTimestamp
-    private LocalDate criadoEm;
+    private LocalDateTime criadoEm;
 
     @PrePersist
     private void gerarUuid() {
