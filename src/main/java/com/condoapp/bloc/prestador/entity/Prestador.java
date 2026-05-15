@@ -3,6 +3,7 @@ package com.condoapp.bloc.prestador.entity;
 import com.condoapp.bloc.auth.entity.Conta;
 import com.condoapp.bloc.prestador.enums.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -33,22 +34,18 @@ public class Prestador {
     @Column(nullable = false, length = 60)
     private String nomeCompleto;
 
-    @Column(unique = true, length = 20)
+    @Column(unique = true, length = 20, nullable = false)
     private String cpfOuCnpj;
 
     private String telefone;
-
-    @Column(nullable = true)
     private String descricao;
-
-    private BigDecimal saldo;
+    private BigDecimal saldo = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Status status;
 
-    @Column(nullable = true)
     private BigDecimal avaliacaoMedia;
-
     private Integer totalAvaliacoes;
 
     @CreationTimestamp
