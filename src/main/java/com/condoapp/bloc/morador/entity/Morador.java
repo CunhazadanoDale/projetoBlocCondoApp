@@ -2,12 +2,10 @@ package com.condoapp.bloc.morador.entity;
 
 import com.condoapp.bloc.auth.entity.Conta;
 import com.condoapp.bloc.condominio.entity.Condominio;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -31,19 +29,17 @@ public class Morador {
     private String nomeCompleto;
 
     @OneToOne
-    @JoinColumn(name = "conta_id", nullable = true)
+    @JoinColumn(name = "conta_id")
     private Conta conta;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "condominio_id", nullable = false)
     private Condominio condominio;
 
     private String unidade;
 
-    @Column(nullable = true)
     private String bloco;
 
-    @Column(nullable = true)
     private String telefone;
 
     @CreationTimestamp
