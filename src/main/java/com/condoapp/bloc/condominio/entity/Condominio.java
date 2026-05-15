@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -40,7 +39,7 @@ public class Condominio {
     private String emailSindico;
 
     private String senhaAtual;
-    private LocalDate senhaExpiraEm;
+    private LocalDateTime senhaExpiraEm;
 
     private Boolean ativo;
 
