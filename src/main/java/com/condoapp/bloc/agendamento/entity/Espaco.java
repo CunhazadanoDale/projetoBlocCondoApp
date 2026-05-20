@@ -1,4 +1,4 @@
-package com.condoapp.bloc.espaco.entity;
+package com.condoapp.bloc.agendamento.entity;
 
 import com.condoapp.bloc.condominio.entity.Condominio;
 import jakarta.persistence.*;
