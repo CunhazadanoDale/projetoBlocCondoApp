@@ -41,7 +41,7 @@ public class Espaco {
     private Integer limiteReservaSemana;
 
     @Column(nullable = false)
-    private boolean ativo;
+    private boolean ativo = true;
 
     @Version
     @Column(name = "version", nullable = false)

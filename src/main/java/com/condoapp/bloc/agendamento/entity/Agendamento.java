@@ -51,5 +51,6 @@ public class Agendamento {
     private String observacao;
 
     @CreationTimestamp
+    @Column(nullable = false)
     private LocalDateTime criadoEm;
 }
