@@ -1,4 +1,8 @@
 package com.condoapp.bloc.chamados.enums;
 
-public class StatusChamado {
+public enum StatusChamado {
+    ABERTO,
+    EM_ANDAMENTO,
+    RESOLVIDO,
+    FECHADO
 }
