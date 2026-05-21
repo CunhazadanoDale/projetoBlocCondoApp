@@ -29,11 +29,11 @@ public class Chamado {
     private UUID uuid;
 
     @ManyToOne
-    @Column(name = "tb_condominio", nullable = false)
+    @JoinColumn(name = "condominio_id", nullable = false)
     private Condominio condominio;
 
     @ManyToOne
-    @Column(name = "tb_morador")
+    @JoinColumn(name = "morador_id")
     private Morador morador;
 
     @Column(length = 60, nullable = false)
