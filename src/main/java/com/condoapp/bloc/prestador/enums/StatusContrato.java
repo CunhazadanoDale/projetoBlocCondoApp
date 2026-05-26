@@ -1,4 +1,10 @@
 package com.condoapp.bloc.prestador.enums;
 
-public class StatusContrato {
+public enum StatusContrato {
+    ACEITO,
+    AGUARDANDO,
+    RECUSADO,
+    EM_ANDAMENTO,
+    CONCLUIDO,
+    CANCELADO
 }
