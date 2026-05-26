@@ -1,8 +1,8 @@
 CREATE TABLE tb_chamado(
 chamado_id BIGSERIAL PRIMARY KEY,
 uuid UUID NOT NULL UNIQUE,
-condominio_id BIGINT NOT NULL REFERENCES tb_condominio,
-morador_id BIGINT REFERENCES tb_morador,
+condominio_id BIGINT NOT NULL REFERENCES tb_condominio (condominio_id),
+morador_id BIGINT REFERENCES tb_morador (morador_id),
 nome_requerente VARCHAR(60) NOT NULL,
 unidade_requerente VARCHAR(60) NOT NULL,
 titulo VARCHAR(20) NOT NULL,
@@ -16,7 +16,7 @@ resolvido_em TIMESTAMP
 
 CREATE TABLE tb_comentario_chamado(
 comentario_id BIGSERIAL PRIMARY KEY,
-chamado_id BIGINT NOT NULL REFERENCES tb_chamado,
+chamado_id BIGINT NOT NULL REFERENCES tb_chamado (chamado_id),
 autor_nome VARCHAR(60) NOT NULL,
 autor_role VARCHAR(30) NOT NULL CHECK(autor_role IN('SINDICO', 'MORADOR')),
 texto TEXT NOT NULL,
