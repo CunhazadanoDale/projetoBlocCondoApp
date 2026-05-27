@@ -1,4 +1,6 @@
 package com.condoapp.bloc.pagamentos.enums;
 
-public class TipoCreditor {
+public enum TipoCreditor {
+    CREDITO,
+    DEBITO
 }
