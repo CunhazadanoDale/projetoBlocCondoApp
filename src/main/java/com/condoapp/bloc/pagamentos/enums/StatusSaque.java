@@ -1,4 +1,7 @@
 package com.condoapp.bloc.pagamentos.enums;
 
-public class StatusSaque {
+public enum StatusSaque {
+    PROCESSADO,
+    PENDENTE,
+    FALHOU
 }
