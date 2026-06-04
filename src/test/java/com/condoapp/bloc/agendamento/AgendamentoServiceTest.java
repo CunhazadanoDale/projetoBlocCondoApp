@@ -4,7 +4,7 @@ import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.entity.Espaco;
 import com.condoapp.bloc.agendamento.enums.StatusAgendamento;
 import com.condoapp.bloc.agendamento.repository.AgendamentoRepository;
-import com.condoapp.bloc.agendamento.service.AgendamentoService;
+import com.condoapp.bloc.agendamento.service.AgendamentoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +26,7 @@ public class AgendamentoServiceTest {
     private AgendamentoRepository agendamentoRepository;
 
     @InjectMocks
-    private AgendamentoService agendamentoService;
+    private AgendamentoServiceImpl agendamentoService;
 
     @Test
     public void deveAcharOAgendamento() {
