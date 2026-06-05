@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface AgendamentoService {
     Agendamento buscarPorUUID(UUID uuid);
+    Agendamento cancelarAgendamento(UUID uuid);
 }

@@ -66,4 +66,38 @@ public class AgendamentoServiceTest {
         assertThatThrownBy(() -> agendamentoService.buscarPorUUID(uuidDoTeste)).isInstanceOf(RuntimeException.class)
                 .hasMessage("agendamento não encontrado");
     }
+
+    @Test
+    public void deveVerificarSeFoiCanceladoOAgendamento() {
+        UUID uuidDoTeste = UUID.randomUUID();
+
+        Agendamento agendamento = Agendamento.builder()
+                .agendamentoId(1L)
+                .uuid(uuidDoTeste)
+                .espaco(Espaco.builder().build())
+                .nomeResponsavel("Cunha")
+                .unidadeResponsavel("Cuia")
+                .inicio(LocalDateTime.now())
+                .fim(LocalDateTime.now())
+                .status(StatusAgendamento.CONFIRMADO)
+                .observacao("")
+                .criadoEm(LocalDateTime.now())
+                .build();
+
+        Mockito.when(agendamentoRepository.findByUuid(uuidDoTeste))
+                .thenReturn(Optional.of(agendamento));
+
+        Mockito.when(agendamentoRepository.save(Mockito.any(Agendamento.class)))
+                .thenReturn(agendamento);
+
+        Agendamento agendamentoAlterado = agendamentoService.cancelarAgendamento(uuidDoTeste);
+
+        assertThat(agendamentoAlterado).isNotNull();
+        assertThat(agendamentoAlterado.getStatus()).isEqualTo(StatusAgendamento.CANCELADO);
+
+        Mockito.verify(agendamentoRepository, Mockito.times(1))
+                .save(Mockito.any(Agendamento.class));
+        Mockito.verify(agendamentoRepository, Mockito.times(1))
+                .findByUuid(uuidDoTeste);
+    }
 }
