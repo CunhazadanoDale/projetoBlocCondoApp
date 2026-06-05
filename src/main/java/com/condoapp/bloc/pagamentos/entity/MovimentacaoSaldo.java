@@ -1,6 +1,6 @@
 package com.condoapp.bloc.pagamentos.entity;
 
-import com.condoapp.bloc.pagamentos.enums.TipoCreditor;
+import com.condoapp.bloc.pagamentos.enums.TipoMovimentacao;
 import com.condoapp.bloc.prestador.entity.Contratacao;
 import com.condoapp.bloc.prestador.entity.Prestador;
 import jakarta.persistence.*;
@@ -33,7 +33,7 @@ public class MovimentacaoSaldo {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "tipo_credito")
-    private TipoCreditor tipoCredito;
+    private TipoMovimentacao tipoCredito;
 
     @Column(nullable = false)
     private BigDecimal valor;
