@@ -6,6 +6,8 @@ import com.condoapp.bloc.agendamento.repository.AgendamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,12 +25,16 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
     @Override
     public Agendamento criarAgendamento(Agendamento agendamento) {
-        return null;
+
+        agendamento.setStatus(StatusAgendamento.PENDENTE);
+        agendamento.setUuid(UUID.randomUUID());
+
+        return agendamentoRepository.save(agendamento);
     }
 
     @Override
     public List<Agendamento> listarAgendamentosDeCondominio(UUID condominioId) {
-        return List.of();
+        return agendamentoRepository.findAll();
     }
 
     @Override
@@ -38,5 +44,16 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
         return agendamentoRepository.save(agendamento);
+    }
+
+    @Override
+    public List<Agendamento> buscarDisponibilidade(Long espacoId, LocalDate date) {
+
+        LocalDateTime inicio = date.atStartOfDay();
+        LocalDateTime fim = date.plusDays(1).atStartOfDay();
+
+        List<Agendamento> disponibilidade = agendamentoRepository.findByDate(espacoId, StatusAgendamento.CANCELADO, inicio, fim);
+
+        return disponibilidade;
     }
 }
