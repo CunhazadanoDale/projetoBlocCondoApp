@@ -1,7 +1,9 @@
 package com.condoapp.bloc.agendamento.service;
 
+import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.entity.Espaco;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EspacoService {
@@ -9,5 +11,4 @@ public interface EspacoService {
     List<Espaco> listarEspacos();
     Espaco criarEspaco(Espaco espaco);
     Espaco atualizarEspaco(Long espacoId, Espaco espaco);
-    Espaco gradeDeDisponibilidadeEspaco(Long espacoId);
 }
