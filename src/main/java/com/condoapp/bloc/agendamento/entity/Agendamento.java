@@ -1,7 +1,6 @@
 package com.condoapp.bloc.agendamento.entity;
 
 import com.condoapp.bloc.agendamento.enums.StatusAgendamento;
-import com.condoapp.bloc.condominio.entity.Condominio;
 import com.condoapp.bloc.morador.entity.Morador;
 import jakarta.persistence.*;
 import lombok.*;
