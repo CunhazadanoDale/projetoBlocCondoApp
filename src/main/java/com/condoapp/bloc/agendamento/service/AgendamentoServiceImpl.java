@@ -6,6 +6,7 @@ import com.condoapp.bloc.agendamento.repository.AgendamentoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -18,6 +19,16 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     public Agendamento buscarPorUUID(UUID uuid) {
         return agendamentoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
+    }
+
+    @Override
+    public Agendamento criarAgendamento(Agendamento agendamento) {
+        return null;
+    }
+
+    @Override
+    public List<Agendamento> listarAgendamentosDeCondominio(UUID condominioId) {
+        return List.of();
     }
 
     @Override
