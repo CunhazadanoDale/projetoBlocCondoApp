@@ -1,10 +1,12 @@
 package com.condoapp.bloc.agendamento.service;
 
+import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.entity.Espaco;
 import com.condoapp.bloc.agendamento.repository.EspacoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,16 +22,20 @@ public class EspacoServiceImpl implements EspacoService {
 
     @Override
     public Espaco criarEspaco(Espaco espaco) {
-        return null;
+        return espacoRepository.save(espaco);
     }
 
     @Override
     public Espaco atualizarEspaco(Long espacoId, Espaco espaco) {
-        return null;
+        Espaco espacoDoBancoDeDados = espacoRepository.findById(espacoId)
+                .orElseThrow(() -> new RuntimeException("Espaco não encontrado"));
+
+        espacoDoBancoDeDados.setDescricao(espaco.getDescricao());
+        espacoDoBancoDeDados.setLimiteReservaSemana(espaco.getLimiteReservaSemana());
+        espacoDoBancoDeDados.setVersion(espaco.getVersion());
+
+        return espacoRepository.save(espacoDoBancoDeDados);
     }
 
-    @Override
-    public Espaco gradeDeDisponibilidadeEspaco(Long espacoId) {
-        return null;
-    }
+
 }
