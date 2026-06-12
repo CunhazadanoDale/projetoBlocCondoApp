@@ -32,14 +32,8 @@ public class AgendamentoController {
     }
 
     @DeleteMapping("/agendamentos/{agendamentoUuid}")
-    public ResponseEntity<Agendamento> cancelarReserva(@PathVariable UUID agendamentoUuid) {
-        return new ResponseEntity<>(agendamentoService.cancelarAgendamento(agendamentoUuid), HttpStatus.OK);
-    }
-
-    @GetMapping("/{uuid}/espacos/{espacoId}/disponibilidade")
-    public ResponseEntity<List<Agendamento>> listarDisponibilidade(@PathVariable(name = "uuid") UUID condominioUuid,
-                                                                   @PathVariable Long espacoId,
-                                                                   @RequestParam LocalDate data) {
-        return new ResponseEntity<>(agendamentoService.buscarDisponibilidade(espacoId, data), HttpStatus.OK);
+    public ResponseEntity<Void> cancelarReserva(@PathVariable UUID agendamentoUuid) {
+        agendamentoService.cancelarAgendamento(agendamentoUuid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
