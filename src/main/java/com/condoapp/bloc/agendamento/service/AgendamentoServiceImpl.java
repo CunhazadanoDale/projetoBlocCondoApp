@@ -38,12 +38,11 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     }
 
     @Override
-    public Agendamento cancelarAgendamento(UUID uuid) {
+    public void cancelarAgendamento(UUID uuid) {
         Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
-        return agendamentoRepository.save(agendamento);
     }
 
     @Override

@@ -10,6 +10,6 @@ public interface AgendamentoService {
     Agendamento buscarPorUUID(UUID uuid);
     Agendamento criarAgendamento(Agendamento agendamento);
     List<Agendamento> listarAgendamentosDeCondominio(UUID condominioId);
-    Agendamento cancelarAgendamento(UUID uuid);
+    void cancelarAgendamento(UUID uuid);
     List<Agendamento> buscarDisponibilidade(Long espacoId, LocalDate data);
 }
