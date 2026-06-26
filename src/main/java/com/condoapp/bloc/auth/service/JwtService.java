@@ -1,6 +1,7 @@
 package com.condoapp.bloc.auth.service;
 
 import com.condoapp.bloc.auth.entity.Conta;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -33,27 +35,24 @@ public class JwtService {
     }
 
     public String extrairEmail(String token) {
-        return Jwts.parser().verifyWith(transformarJwtEmSecret())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+        return extrairClaim(token, Claims::getSubject);
     }
 
     public boolean isTokenValido(String token, UserDetails userDetails) {
         return extrairEmail(token).equals(userDetails.getUsername()) && !isTokenExpirado(token);
     }
 
-    private boolean isTokenExpirado(String token) {
-        return extrairTempoDeExpiracao(token).before(new Date());
-    }
-
-    private Date extrairTempoDeExpiracao(String token) {
-        return Jwts.parser().verifyWith(transformarJwtEmSecret())
+    private <T> T extrairClaim(String token, Function<Claims, T> resolver) {
+        Claims claims = Jwts.parser().verifyWith(transformarJwtEmSecret())
                 .build()
                 .parseSignedClaims(token)
-                .getPayload()
-                .getExpiration();
+                .getPayload();
+
+        return resolver.apply(claims);
+    }
+
+    private boolean isTokenExpirado(String token) {
+        return extrairClaim(token, Claims::getExpiration).before(new Date());
     }
 
     private SecretKey transformarJwtEmSecret() {
