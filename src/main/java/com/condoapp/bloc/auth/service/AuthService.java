@@ -6,5 +6,5 @@ import com.condoapp.bloc.auth.dto.RegisterRequestDTO;
 
 public interface AuthService {
     LoginResponseDTO logar(LoginRequestDTO dto);
-    Void registrar(RegisterRequestDTO dto);
+    LoginResponseDTO registrar(RegisterRequestDTO dto);
 }
