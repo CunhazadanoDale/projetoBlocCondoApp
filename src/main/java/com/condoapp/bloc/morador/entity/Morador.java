@@ -29,13 +29,14 @@ public class Morador {
     private String nomeCompleto;
 
     @OneToOne
-    @JoinColumn(name = "conta_id")
+    @JoinColumn(name = "conta_id", nullable = false)
     private Conta conta;
 
     @ManyToOne
     @JoinColumn(name = "condominio_id", nullable = false)
     private Condominio condominio;
 
+    @Column(nullable = false)
     private String unidade;
 
     private String bloco;

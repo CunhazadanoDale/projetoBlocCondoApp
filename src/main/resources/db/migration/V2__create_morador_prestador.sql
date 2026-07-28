@@ -4,7 +4,7 @@ uuid UUID NOT NULL UNIQUE,
 nome_completo VARCHAR(60) NOT NULL,
 conta_id BIGINT UNIQUE REFERENCES tb_conta (conta_id),
 condominio_id BIGINT NOT NULL REFERENCES tb_condominio (condominio_id),
-unidade TEXT,
+unidade TEXT NOT NULL,
 bloco TEXT,
 telefone VARCHAR(255),
 criado_em TIMESTAMP DEFAULT now()

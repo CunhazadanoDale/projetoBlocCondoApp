@@ -48,10 +48,10 @@ public class Conta implements UserDetails {
     @CreationTimestamp
     private LocalDateTime criadoEm;
 
-    @OneToOne(mappedBy = "conta", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "conta")
     private Morador morador;
 
-    @OneToOne(mappedBy = "conta", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "conta")
     private Prestador prestador;
 
     @Override
