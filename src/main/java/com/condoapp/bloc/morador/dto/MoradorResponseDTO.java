@@ -18,6 +18,6 @@ public class MoradorResponseDTO {
     private String unidade;
     private String telefone;
     private String bloco;
-    private Long condominioId;
+    private UUID condominioUUID;
     private LocalDateTime criadoEm;
 }
