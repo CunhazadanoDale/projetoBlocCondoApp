@@ -8,9 +8,9 @@ import com.condoapp.bloc.morador.dto.MoradorRequestDTO;
 import com.condoapp.bloc.morador.dto.MoradorResponseDTO;
 import com.condoapp.bloc.morador.entity.Morador;
 import com.condoapp.bloc.morador.repository.MoradorRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
