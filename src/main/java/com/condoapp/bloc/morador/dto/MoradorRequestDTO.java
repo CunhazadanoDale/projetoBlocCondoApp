@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,7 +16,7 @@ public class MoradorRequestDTO {
     private String nomeCompleto;
 
     @NotBlank
-    private Long condominioId;
+    private UUID condominioUUID;
     @NotBlank
     private String unidade;
     private String bloco;
