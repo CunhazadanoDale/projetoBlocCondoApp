@@ -1,4 +1,4 @@
-package com.condoapp.bloc.condominio.entity.repository;
+package com.condoapp.bloc.condominio.repository;
 
 import com.condoapp.bloc.condominio.entity.Condominio;
 import org.springframework.data.jpa.repository.JpaRepository;
