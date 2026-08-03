@@ -18,9 +18,9 @@ nome_completo VARCHAR(60) NOT NULL,
 cpf_ou_cnpj VARCHAR(20) NOT NULL UNIQUE,
 telefone VARCHAR(255),
 descricao TEXT,
-saldo DECIMAL DEFAULT 0,
+saldo DECIMAL NOT NULL DEFAULT 0,
 status VARCHAR(30) NOT NULL CHECK (status IN('APROVADO', 'REPROVADO', 'PENDENTE')),
 avaliacao_media DECIMAL,
-total_avaliacoes INTEGER,
+total_avaliacoes INTEGER NOT NULL,
 criado_em TIMESTAMP DEFAULT now()
 );
