@@ -28,7 +28,7 @@ public class Prestador {
     private UUID uuid;
 
     @OneToOne
-    @JoinColumn(name = "conta_id")
+    @JoinColumn(name = "conta_id", nullable = false)
     private Conta conta;
 
     @Column(nullable = false, length = 60)
@@ -39,14 +39,19 @@ public class Prestador {
 
     private String telefone;
     private String descricao;
+
+    @Builder.Default
     private BigDecimal saldo = BigDecimal.ZERO;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
+    @Column(nullable = false)
     private Status status;
 
     private BigDecimal avaliacaoMedia;
-    private Integer totalAvaliacoes;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer totalAvaliacoes = 0;
 
     @CreationTimestamp
     private LocalDateTime criadoEm;
