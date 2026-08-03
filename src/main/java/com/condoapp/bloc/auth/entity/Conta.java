@@ -51,7 +51,7 @@ public class Conta implements UserDetails {
     @OneToOne(mappedBy = "conta", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Morador morador;
 
-    @OneToOne(mappedBy = "conta")
+    @OneToOne(mappedBy = "conta", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Prestador prestador;
 
     @Override
