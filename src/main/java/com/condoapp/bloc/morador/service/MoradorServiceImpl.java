@@ -43,7 +43,6 @@ public class MoradorServiceImpl implements MoradorService{
                 .build();
 
         Morador novoMorador = moradorRepository.save(morador);
-        conta.setMorador(novoMorador);
 
         return MoradorMapper.fromEntityToResponse(novoMorador);
     }

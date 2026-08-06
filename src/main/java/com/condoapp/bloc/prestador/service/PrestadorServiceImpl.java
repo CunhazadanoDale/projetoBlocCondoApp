@@ -45,7 +45,6 @@ public class PrestadorServiceImpl implements PrestadorService{
                 .build();
 
         Prestador prestadorSalvo = prestadorRepository.save(prestador);
-        conta.setPrestador(prestadorSalvo);
 
         return PrestadorMapper.toPrivateResponseDTO(prestadorSalvo);
     }
