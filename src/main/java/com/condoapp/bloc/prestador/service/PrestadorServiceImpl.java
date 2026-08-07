@@ -5,6 +5,7 @@ import com.condoapp.bloc.auth.repository.ContaRepository;
 import com.condoapp.bloc.prestador.dto.PrestadorMapper;
 import com.condoapp.bloc.prestador.dto.PrestadorRequestDTO;
 import com.condoapp.bloc.prestador.dto.PrestadorResponseDTO;
+import com.condoapp.bloc.prestador.dto.PublicPrestadorResponseDTO;
 import com.condoapp.bloc.prestador.entity.Prestador;
 import com.condoapp.bloc.prestador.enums.Status;
 import com.condoapp.bloc.prestador.repository.PrestadorRepository;
@@ -50,10 +51,10 @@ public class PrestadorServiceImpl implements PrestadorService{
     }
 
     @Override
-    public PrestadorResponseDTO buscarPorUUID(UUID uuid) {
+    public PublicPrestadorResponseDTO buscarPorUUID(UUID uuid) {
         Prestador prestadorFromDB = prestadorRepository.findByUUID(uuid)
                 .orElseThrow(() -> new RuntimeException("Nenhum prestador encontrado"));
 
-        return PrestadorMapper.toPrivateResponseDTO(prestadorFromDB);
+        return PrestadorMapper.toPublicResponseDTO(prestadorFromDB);
     }
 }
