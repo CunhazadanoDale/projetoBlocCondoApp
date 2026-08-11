@@ -43,6 +43,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
                 .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
+
     }
 
     @Override
