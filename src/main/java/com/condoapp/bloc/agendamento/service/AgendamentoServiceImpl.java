@@ -44,6 +44,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
 
+        
     }
 
     @Override
