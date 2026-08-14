@@ -41,6 +41,7 @@ public class Espaco {
     private Integer limiteReservaSemana;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean ativo = true;
 
     @Version
