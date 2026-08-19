@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface EspacoService {
 
-    List<EspacoResponseDTO> listarEspacos();
-    EspacoResponseDTO criarEspaco(Espaco espaco);
+    List<EspacoResponseDTO> listarEspacos(Long condominioID);
+    EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco);
     EspacoResponseDTO atualizarEspaco(Long espacoId, EspacoRequestDTO espaco);
 }
