@@ -57,6 +57,7 @@ public class EspacoServiceImpl implements EspacoService {
         return EspacoMapper.fromEntityToResponse(novoEspaco);
     }
 
+    @Transactional
     @Override
     public EspacoResponseDTO atualizarEspaco(Long espacoId, EspacoRequestDTO espaco) {
         Espaco espacoDoBancoDeDados = espacoRepository.findById(espacoId)
@@ -64,8 +65,13 @@ public class EspacoServiceImpl implements EspacoService {
 
         espacoDoBancoDeDados.setDescricao(espaco.getDescricao());
         espacoDoBancoDeDados.setLimiteReservaSemana(espaco.getLimiteReservaSemana());
+        espacoDoBancoDeDados.setAntecedenciaMinHoras(espaco.getMinHoras());
+        espacoDoBancoDeDados.setCancelamentoMinHoras(espaco.getCancelamentoMinHoras());
+        espacoDoBancoDeDados.setCapacidade(espaco.getCapacidade());
 
-        return espacoRepository.save(espacoDoBancoDeDados);
+        espacoRepository.save(espacoDoBancoDeDados);
+
+        return EspacoMapper.fromEntityToResponse(espacoDoBancoDeDados);
     }
 
 
