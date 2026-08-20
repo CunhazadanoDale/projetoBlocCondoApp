@@ -53,6 +53,8 @@ public class EspacoServiceImpl implements EspacoService {
                 .limiteReservaSemana(espaco.getLimiteReservaSemana())
                 .build();
 
+        espacoRepository.save(novoEspaco);
+
 
         return EspacoMapper.fromEntityToResponse(novoEspaco);
     }
