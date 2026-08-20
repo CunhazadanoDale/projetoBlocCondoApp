@@ -35,7 +35,7 @@ public class EspacoServiceImpl implements EspacoService {
     @Transactional
     @Override
     public EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco) {
-        if(espaco.getNome() == null || espaco.getNome().trim() == "") {
+        if(espaco.getNome() == null || espaco.getNome().trim().isBlank()) {
             throw new IllegalArgumentException("Nome do espaco vazio");
         }
 
