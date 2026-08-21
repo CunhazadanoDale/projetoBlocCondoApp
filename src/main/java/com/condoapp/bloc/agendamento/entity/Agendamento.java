@@ -18,6 +18,7 @@ import java.util.UUID;
 @Builder
 public class Agendamento {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long agendamentoId;
