@@ -23,9 +23,9 @@ public class EspacoServiceImpl implements EspacoService {
     private final CondominioRepository condominioRepository;
 
     @Override
-    public List<EspacoResponseDTO> listarEspacos(Long condominioID) {
+    public List<EspacoResponseDTO> listarEspacos(UUID condominioUUID) {
 
-        List<Espaco> espacosAtivos = espacoRepository.findAllActiveByCondominioID(condominioID);
+        List<Espaco> espacosAtivos = espacoRepository.findAllActiveByCondominioUUID(condominioUUID);
 
         return espacosAtivos.stream()
                 .map(espaco -> EspacoMapper.fromEntityToResponse(espaco))
@@ -35,11 +35,11 @@ public class EspacoServiceImpl implements EspacoService {
     @Transactional
     @Override
     public EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco) {
-        if(espaco.getNome() == null || espaco.getNome().trim().isBlank()) {
+        if(espaco.getNome().trim().isBlank()) {
             throw new IllegalArgumentException("Nome do espaco vazio");
         }
 
-        Condominio condominioFromDatabase = condominioRepository.findById(espaco.getCondominioID())
+        Condominio condominioFromDatabase = condominioRepository.findByUUID(espaco.getCondominioUUID())
                 .orElseThrow(() -> new RuntimeException("Condominio nao encontrado"));
 
         Espaco novoEspaco = Espaco.builder()
@@ -61,8 +61,8 @@ public class EspacoServiceImpl implements EspacoService {
 
     @Transactional
     @Override
-    public EspacoResponseDTO atualizarEspaco(Long espacoId, EspacoRequestDTO espaco) {
-        Espaco espacoDoBancoDeDados = espacoRepository.findById(espacoId)
+    public EspacoResponseDTO atualizarEspaco(UUID espacoId, EspacoRequestDTO espaco) {
+        Espaco espacoDoBancoDeDados = espacoRepository.findByUuid(espacoId)
                 .orElseThrow(() -> new RuntimeException("Espaco não encontrado"));
 
         espacoDoBancoDeDados.setDescricao(espaco.getDescricao());
