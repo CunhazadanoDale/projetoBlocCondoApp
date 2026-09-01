@@ -15,6 +15,6 @@ public interface EspacoRepository extends JpaRepository<Espaco, Long> {
 
     Optional<Espaco> findByUuid(UUID uuid);
 
-    @Query("SELECT e Espaco e WHERE e.condominio.condominio_id = :condominioID AND e.ativo = true")
-    List<Espaco> findAllActiveByCondominioID(@Param("condominioID") Long condominioID);
+    @Query("SELECT e FROM Espaco e WHERE e.condominio.condominio_uuid = :condominioUUID AND e.ativo = true")
+    List<Espaco> findAllActiveByCondominioUUID(@Param("condominioUUID") UUID condominioID);
 }
