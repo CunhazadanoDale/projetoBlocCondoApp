@@ -14,5 +14,5 @@ public interface EspacoService {
 
     List<EspacoResponseDTO> listarEspacos(UUID condominioUUID);
     EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco);
-    EspacoResponseDTO atualizarEspaco(Long espacoId, EspacoRequestDTO espaco);
+    EspacoResponseDTO atualizarEspaco(UUID espacoId, EspacoRequestDTO espaco);
 }
