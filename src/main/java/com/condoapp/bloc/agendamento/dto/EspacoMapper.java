@@ -7,7 +7,7 @@ public class EspacoMapper {
     public static EspacoResponseDTO fromEntityToResponse(Espaco espaco) {
         return EspacoResponseDTO.builder()
                 .uuid(espaco.getUuid())
-                .condominioID(espaco.getCondominio().getCondominioId())
+                .condominioUUID(espaco.getCondominio().getUuid())
                 .nome(espaco.getNome())
                 .descricao(espaco.getDescricao())
                 .capacidade(espaco.getCapacidade())
