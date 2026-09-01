@@ -14,7 +14,7 @@ import java.util.UUID;
 public class EspacoResponseDTO {
 
     private UUID uuid;
-    private Long condominioID;
+    private UUID condominioUUID;
     private String nome;
     private String descricao;
     private Integer capacidade;
