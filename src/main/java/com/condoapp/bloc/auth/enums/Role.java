@@ -4,5 +4,10 @@ public enum Role {
     MORADOR,
     PRESTADOR,
     SINDICO,
-    ADMIN
+    ADMIN;
+
+    public Boolean isSindicoOrAdmin() {
+        return this == Role.ADMIN || this == Role.SINDICO;
+    }
 }
+
