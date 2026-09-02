@@ -6,8 +6,8 @@ public enum Role {
     SINDICO,
     ADMIN;
 
-    public Boolean isSindicoOrAdmin() {
-        return this == Role.ADMIN || this == Role.SINDICO;
+    public Boolean isSindico() {
+        return this == Role.SINDICO;
     }
 }
 
