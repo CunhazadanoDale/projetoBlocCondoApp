@@ -5,14 +5,13 @@ import com.condoapp.bloc.agendamento.dto.EspacoRequestDTO;
 import com.condoapp.bloc.agendamento.dto.EspacoResponseDTO;
 import com.condoapp.bloc.agendamento.entity.Espaco;
 import com.condoapp.bloc.agendamento.repository.EspacoRepository;
-import com.condoapp.bloc.condominio.entity.Condominio;
-import com.condoapp.bloc.condominio.repository.CondominioRepository;
+import com.condoapp.bloc.auth.entity.Conta;
+import com.condoapp.bloc.auth.enums.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -20,7 +19,6 @@ import java.util.UUID;
 public class EspacoServiceImpl implements EspacoService {
 
     private final EspacoRepository espacoRepository;
-    private final CondominioRepository condominioRepository;
 
     @Override
     public List<EspacoResponseDTO> listarEspacos(UUID condominioUUID) {
@@ -34,17 +32,14 @@ public class EspacoServiceImpl implements EspacoService {
 
     @Transactional
     @Override
-    public EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco) {
-        if(espaco.getNome().trim().isBlank()) {
-            throw new IllegalArgumentException("Nome do espaco vazio");
+    public EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco, Conta conta) {
+        if (!validarSindico(conta)) {
+            throw new RuntimeException("Não possui permissão para criar determinado espaço");
         }
-
-        Condominio condominioFromDatabase = condominioRepository.findByUUID(espaco.getCondominioUUID())
-                .orElseThrow(() -> new RuntimeException("Condominio nao encontrado"));
 
         Espaco novoEspaco = Espaco.builder()
                 .uuid(UUID.randomUUID())
-                .condominio(condominioFromDatabase)
+                .condominio(conta.getMorador().getCondominio())
                 .nome(espaco.getNome())
                 .descricao(espaco.getDescricao())
                 .capacidade(espaco.getCapacidade())
@@ -61,9 +56,21 @@ public class EspacoServiceImpl implements EspacoService {
 
     @Transactional
     @Override
-    public EspacoResponseDTO atualizarEspaco(UUID espacoId, EspacoRequestDTO espaco) {
+    public EspacoResponseDTO atualizarEspaco(UUID espacoId, EspacoRequestDTO espaco,
+                                             Conta conta) {
+
+        if (!validarSindico(conta)) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
+
         Espaco espacoDoBancoDeDados = espacoRepository.findByUuid(espacoId)
                 .orElseThrow(() -> new RuntimeException("Espaco não encontrado"));
+
+        if (!Objects.equals(
+                conta.getMorador().getCondominio().getUuid(),
+                espacoDoBancoDeDados.getCondominio().getUuid())) {
+            throw new RuntimeException("Não possui ligação com este espaço");
+        }
 
         espacoDoBancoDeDados.setDescricao(espaco.getDescricao());
         espacoDoBancoDeDados.setLimiteReservaSemana(espaco.getLimiteReservaSemana());
@@ -74,6 +81,15 @@ public class EspacoServiceImpl implements EspacoService {
         espacoRepository.save(espacoDoBancoDeDados);
 
         return EspacoMapper.fromEntityToResponse(espacoDoBancoDeDados);
+    }
+
+
+    private boolean validarSindico(Conta conta) {
+        boolean temAutoridade = conta.getAuthorities().stream()
+                .map(auth -> Role.valueOf(auth.getAuthority().replace("ROLE_", "")))
+                .anyMatch(Role::isSindico);
+
+        return temAutoridade;
     }
 
 
