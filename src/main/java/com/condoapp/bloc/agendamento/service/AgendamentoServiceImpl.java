@@ -1,8 +1,15 @@
 package com.condoapp.bloc.agendamento.service;
 
+import com.condoapp.bloc.agendamento.dto.AgendamentoMapper;
+import com.condoapp.bloc.agendamento.dto.AgendamentoRequestDTO;
+import com.condoapp.bloc.agendamento.dto.AgendamentoResponseDTO;
+import com.condoapp.bloc.agendamento.dto.AlterarAgendamentoDTO;
 import com.condoapp.bloc.agendamento.entity.Agendamento;
+import com.condoapp.bloc.agendamento.entity.Espaco;
 import com.condoapp.bloc.agendamento.enums.StatusAgendamento;
 import com.condoapp.bloc.agendamento.repository.AgendamentoRepository;
+import com.condoapp.bloc.agendamento.repository.EspacoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,28 +23,64 @@ import java.util.UUID;
 public class AgendamentoServiceImpl implements AgendamentoService {
 
     private final AgendamentoRepository agendamentoRepository;
+    private final EspacoRepository espacoRepository;
 
     @Override
-    public Agendamento buscarPorUUID(UUID uuid) {
-        return agendamentoRepository.findByUuid(uuid)
-                .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
+    public AgendamentoResponseDTO buscarPorUUID(UUID uuid) {
+
+        Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
+                .orElseThrow( () -> new RuntimeException("Não encontrado"));
+
+        return AgendamentoMapper.fromEntityToResponse(agendamento);
     }
 
     @Override
-    public Agendamento criarAgendamento(Agendamento agendamento) {
+    @Transactional
+    public AgendamentoResponseDTO criarAgendamento(AgendamentoRequestDTO agendamento) {
 
-        agendamento.setStatus(StatusAgendamento.PENDENTE);
-        agendamento.setUuid(UUID.randomUUID());
+        Espaco espacoExiste = espacoRepository.findByUuid(agendamento.getEspacoUUID())
+                .orElseThrow(() -> new RuntimeException("Espaço não encontrado"));
 
-        return agendamentoRepository.save(agendamento);
+        List<Agendamento> disponivel = agendamentoRepository.findByDate(espacoExiste.getEspacoId(), StatusAgendamento.CANCELADO,
+                agendamento.getInicio(), agendamento.getFim());
+
+        boolean temConflitoHorario = disponivel.stream()
+                .anyMatch(existente -> agendamento.getInicio().isBefore(existente.getFim()) &&
+                        agendamento.getFim().isAfter(existente.getInicio()));
+
+        if (temConflitoHorario) {
+            throw new RuntimeException("O horario selecionado já está ocupado");
+        }
+
+        Agendamento agendamentoNovo = Agendamento.builder()
+                .uuid(UUID.randomUUID())
+                .espaco(espacoExiste)
+                .nomeResponsavel(agendamento.getNomeResponsavel())
+                .unidadeResponsavel(agendamento.getUnidadeResponsavel())
+                .inicio(agendamento.getInicio())
+                .fim(agendamento.getFim())
+                .status(StatusAgendamento.PENDENTE)
+                .criadoEm(LocalDateTime.now())
+                .build();
+
+        return AgendamentoMapper.fromEntityToResponse(agendamentoRepository.save(agendamentoNovo));
     }
 
     @Override
-    public List<Agendamento> listarAgendamentosDeCondominio(UUID condominioId) {
-        return agendamentoRepository.findAll();
+    public List<AgendamentoResponseDTO> listarAgendamentosDeCondominio(UUID condominioUUID) {
+
+        List<Agendamento> agendamentoList = agendamentoRepository.findAllByCondominioUUID(condominioUUID)
+
     }
 
     @Override
+    @Transactional
+    public AgendamentoResponseDTO alterarAgendamentoStatusEObservacao(UUID agendamentoUUID, AlterarAgendamentoDTO alterarAgendamentoDTO) {
+
+    }
+
+    @Override
+    @Transactional
     public void cancelarAgendamento(UUID uuid) {
         Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
@@ -48,7 +91,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     }
 
     @Override
-    public List<Agendamento> buscarDisponibilidade(Long espacoId, LocalDate date) {
+    public List<AgendamentoResponseDTO> buscarDisponibilidade(Long espacoId, LocalDate date) {
 
         LocalDateTime inicio = date.atStartOfDay();
         LocalDateTime fim = date.plusDays(1).atStartOfDay();
