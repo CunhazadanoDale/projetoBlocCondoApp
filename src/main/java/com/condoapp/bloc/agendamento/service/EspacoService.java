@@ -4,6 +4,7 @@ import com.condoapp.bloc.agendamento.dto.EspacoRequestDTO;
 import com.condoapp.bloc.agendamento.dto.EspacoResponseDTO;
 import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.entity.Espaco;
+import com.condoapp.bloc.auth.entity.Conta;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -13,6 +14,6 @@ public interface EspacoService {
 
 
     List<EspacoResponseDTO> listarEspacos(UUID condominioUUID);
-    EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco);
-    EspacoResponseDTO atualizarEspaco(UUID espacoId, EspacoRequestDTO espaco);
+    EspacoResponseDTO criarEspaco(EspacoRequestDTO espaco, Conta conta);
+    EspacoResponseDTO atualizarEspaco(UUID espacoId, EspacoRequestDTO espacoRequestDTO, Conta conta);
 }
