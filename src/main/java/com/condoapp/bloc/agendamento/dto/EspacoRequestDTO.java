@@ -1,28 +1,31 @@
 package com.condoapp.bloc.agendamento.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EspacoRequestDTO {
 
-    private UUID condominioUUID;
-
     @NotBlank
     private String nome;
     private String descricao;
 
-    @NotBlank
+    @NotEmpty
     private Integer capacidade;
 
-    @NotBlank
+    @NotEmpty
+    @Positive
     private Integer minHoras;
+
+    @Positive
     private Integer cancelamentoMinHoras;
+
+    @Positive
     private Integer limiteReservaSemana;
 }
