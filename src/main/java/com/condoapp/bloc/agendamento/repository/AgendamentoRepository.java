@@ -2,6 +2,7 @@ package com.condoapp.bloc.agendamento.repository;
 
 import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.enums.StatusAgendamento;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
 
     @Query("SELECT a FROM Agendamento a WHERE a.espaco.espacoId = :espacoId AND a.status <> :status AND a.inicio < :fim AND a.fim > :inicio")
     List<Agendamento> findByDate(Long espacoId, StatusAgendamento status, LocalDateTime inicio, LocalDateTime fim);
+
+    @Query("SELECT a FROM agendamento a WHERE a.espago.condominio.condominio_uuid = :condominioUUID AND a.status <> :status")
+    List<Agendamento> findAgendamentoByCondominioUUID(@Param("condominioUUID") UUID condominioUUID, @Param("status") StatusAgendamento status);
 }
