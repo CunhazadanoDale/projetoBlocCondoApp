@@ -69,7 +69,11 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     @Override
     public List<AgendamentoResponseDTO> listarAgendamentosDeCondominio(UUID condominioUUID) {
 
-        List<Agendamento> agendamentoList = agendamentoRepository.findAllByCondominioUUID(condominioUUID)
+        List<Agendamento> agendamentoList = agendamentoRepository.findAgendamentoByCondominioUUID(condominioUUID, StatusAgendamento.CANCELADO);
+
+        return agendamentoList.stream()
+                .map(AgendamentoMapper::fromEntityToResponse)
+                .toList();
 
     }
 
