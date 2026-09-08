@@ -2,9 +2,11 @@ package com.condoapp.bloc.agendamento.repository;
 
 import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.enums.StatusAgendamento;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -17,9 +19,10 @@ import java.util.UUID;
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> {
     Optional<Agendamento> findByUuid(UUID uuid);
 
-    @Query("SELECT a FROM Agendamento a WHERE a.espaco.espacoId = :espacoId AND a.status <> :status AND a.inicio < :fim AND a.fim > :inicio")
-    List<Agendamento> findByDate(Long espacoId, StatusAgendamento status, LocalDateTime inicio, LocalDateTime fim);
+    @Query("SELECT a FROM Agendamento a WHERE a.espaco.uuid = :espacoUUID AND a.status <> :status AND a.inicio < :fim AND a.fim > :inicio")
+    List<Agendamento> findByDate(@Param("espacoUUID") UUID espacoUUID, StatusAgendamento status, LocalDateTime inicio, LocalDateTime fim);
 
-    @Query("SELECT a FROM agendamento a WHERE a.espaco.condominio.condominio_uuid = :condominioUUID AND a.status <> :status")
-    List<Agendamento> findAgendamentoByCondominioUUID(@Param("condominioUUID") UUID condominioUUID, @Param("status") StatusAgendamento status);
+    @Query("SELECT a FROM Agendamento a WHERE a.espaco.condominio.uuid = :condominioUUID AND a.status <> :status")
+    Page<Agendamento> findAgendamentoByCondominioUUID(@Param("condominioUUID") UUID condominioUUID,
+                                                      @Param("status") StatusAgendamento status, Pageable pageable);
 }
