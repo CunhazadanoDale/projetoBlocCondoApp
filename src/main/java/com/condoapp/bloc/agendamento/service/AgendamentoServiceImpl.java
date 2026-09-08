@@ -81,6 +81,13 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     @Transactional
     public AgendamentoResponseDTO alterarAgendamentoStatusEObservacao(UUID agendamentoUUID, AlterarAgendamentoDTO alterarAgendamentoDTO) {
 
+        Agendamento agendamentoFromDB = agendamentoRepository.findByUuid(agendamentoUUID)
+                .orElseThrow(() -> new RuntimeException("Agendamento não existe"));
+
+        agendamentoFromDB.setStatus(alterarAgendamentoDTO.getStatusAgendamento());
+        agendamentoFromDB.setObservacao(alterarAgendamentoDTO.getObservacao());
+
+        return AgendamentoMapper.fromEntityToResponse(agendamentoRepository.save(agendamentoFromDB));
     }
 
     @Override
@@ -91,6 +98,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
 
+        agendamentoRepository.save(agendamento);
         
     }
 
@@ -102,6 +110,8 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
         List<Agendamento> disponibilidade = agendamentoRepository.findByDate(espacoId, StatusAgendamento.CANCELADO, inicio, fim);
 
-        return disponibilidade;
+        return disponibilidade.stream()
+                .map(AgendamentoMapper::fromEntityToResponse)
+                .toList();
     }
 }
