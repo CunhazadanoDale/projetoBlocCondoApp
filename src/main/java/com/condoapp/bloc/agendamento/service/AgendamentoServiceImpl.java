@@ -1,16 +1,19 @@
 package com.condoapp.bloc.agendamento.service;
 
-import com.condoapp.bloc.agendamento.dto.AgendamentoMapper;
-import com.condoapp.bloc.agendamento.dto.AgendamentoRequestDTO;
-import com.condoapp.bloc.agendamento.dto.AgendamentoResponseDTO;
-import com.condoapp.bloc.agendamento.dto.AlterarAgendamentoDTO;
+import com.condoapp.bloc.agendamento.dto.*;
 import com.condoapp.bloc.agendamento.entity.Agendamento;
 import com.condoapp.bloc.agendamento.entity.Espaco;
 import com.condoapp.bloc.agendamento.enums.StatusAgendamento;
 import com.condoapp.bloc.agendamento.repository.AgendamentoRepository;
 import com.condoapp.bloc.agendamento.repository.EspacoRepository;
+import com.condoapp.bloc.auth.entity.Conta;
+import com.condoapp.bloc.auth.enums.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,7 +29,11 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     private final EspacoRepository espacoRepository;
 
     @Override
-    public AgendamentoResponseDTO buscarPorUUID(UUID uuid) {
+    public AgendamentoResponseDTO buscarPorUUID(UUID uuid, Conta conta) {
+
+        if (!validarSindico(conta)) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
 
         Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
                 .orElseThrow( () -> new RuntimeException("Não encontrado"));
@@ -41,7 +48,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         Espaco espacoExiste = espacoRepository.findByUuid(agendamento.getEspacoUUID())
                 .orElseThrow(() -> new RuntimeException("Espaço não encontrado"));
 
-        List<Agendamento> disponivel = agendamentoRepository.findByDate(espacoExiste.getEspacoId(), StatusAgendamento.CANCELADO,
+        List<Agendamento> disponivel = agendamentoRepository.findByDate(espacoExiste.getUuid(), StatusAgendamento.CANCELADO,
                 agendamento.getInicio(), agendamento.getFim());
 
         boolean temConflitoHorario = disponivel.stream()
@@ -67,19 +74,36 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     }
 
     @Override
-    public List<AgendamentoResponseDTO> listarAgendamentosDeCondominio(UUID condominioUUID) {
+    public ConteudoPaginacao<AgendamentoResponseDTO> listarAgendamentosDeCondominio(Integer pageNumber, Integer pageSize,
+                                                                       String sortBy, String sortOrder, UUID condominioUUID, Conta conta) {
 
-        List<Agendamento> agendamentoList = agendamentoRepository.findAgendamentoByCondominioUUID(condominioUUID, StatusAgendamento.CANCELADO);
+        if (!validarSindico(conta)) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
 
-        return agendamentoList.stream()
+        Sort sortByAndOrder = sortOrder.equals("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+        Page<Agendamento> agendamentoList = agendamentoRepository.findAgendamentoByCondominioUUID(condominioUUID, StatusAgendamento.CANCELADO, pageDetails);
+
+        List<AgendamentoResponseDTO> agendamentoResponseDTOS = agendamentoList.stream()
                 .map(AgendamentoMapper::fromEntityToResponse)
                 .toList();
+
+        return ConteudoPaginacao.de(agendamentoList, agendamentoResponseDTOS);
 
     }
 
     @Override
     @Transactional
-    public AgendamentoResponseDTO alterarAgendamentoStatusEObservacao(UUID agendamentoUUID, AlterarAgendamentoDTO alterarAgendamentoDTO) {
+    public AgendamentoResponseDTO alterarAgendamentoStatusEObservacao(UUID agendamentoUUID, AlterarAgendamentoDTO alterarAgendamentoDTO,
+                                                                      Conta conta) {
+
+        if (!validarSindico(conta)) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
 
         Agendamento agendamentoFromDB = agendamentoRepository.findByUuid(agendamentoUUID)
                 .orElseThrow(() -> new RuntimeException("Agendamento não existe"));
@@ -92,7 +116,12 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
     @Override
     @Transactional
-    public void cancelarAgendamento(UUID uuid) {
+    public void cancelarAgendamento(UUID uuid, Conta conta) {
+
+        if (!validarSindico(conta)) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
+
         Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
 
@@ -103,15 +132,23 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     }
 
     @Override
-    public List<AgendamentoResponseDTO> buscarDisponibilidade(Long espacoId, LocalDate date) {
+    public List<AgendamentoResponseDTO> buscarDisponibilidade(UUID espacoUUID, LocalDate date) {
 
         LocalDateTime inicio = date.atStartOfDay();
         LocalDateTime fim = date.plusDays(1).atStartOfDay();
 
-        List<Agendamento> disponibilidade = agendamentoRepository.findByDate(espacoId, StatusAgendamento.CANCELADO, inicio, fim);
+        List<Agendamento> disponibilidade = agendamentoRepository.findByDate(espacoUUID, StatusAgendamento.CANCELADO, inicio, fim);
 
         return disponibilidade.stream()
                 .map(AgendamentoMapper::fromEntityToResponse)
                 .toList();
+    }
+
+    private boolean validarSindico(Conta conta) {
+        boolean temAutoridade = conta.getAuthorities().stream()
+                .map(auth -> Role.valueOf(auth.getAuthority().replace("ROLE_", "")))
+                .anyMatch(Role::isSindico);
+
+        return temAutoridade;
     }
 }
