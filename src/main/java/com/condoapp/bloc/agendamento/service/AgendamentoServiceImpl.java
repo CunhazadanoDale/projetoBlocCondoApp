@@ -43,7 +43,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
 
     @Override
     @Transactional
-    public AgendamentoResponseDTO criarAgendamento(AgendamentoRequestDTO agendamento) {
+    public AgendamentoResponseDTO criarAgendamento(AgendamentoRequestDTO agendamento, Conta conta) {
 
         Espaco espacoExiste = espacoRepository.findByUuid(agendamento.getEspacoUUID())
                 .orElseThrow(() -> new RuntimeException("Espaço não encontrado"));
@@ -62,6 +62,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
         Agendamento agendamentoNovo = Agendamento.builder()
                 .uuid(UUID.randomUUID())
                 .espaco(espacoExiste)
+                .morador(conta.getMorador())
                 .nomeResponsavel(agendamento.getNomeResponsavel())
                 .unidadeResponsavel(agendamento.getUnidadeResponsavel())
                 .inicio(agendamento.getInicio())

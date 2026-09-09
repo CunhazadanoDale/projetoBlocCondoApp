@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface AgendamentoService {
     AgendamentoResponseDTO buscarPorUUID(UUID uuid, Conta conta);
-    AgendamentoResponseDTO criarAgendamento(AgendamentoRequestDTO agendamento);
+    AgendamentoResponseDTO criarAgendamento(AgendamentoRequestDTO agendamento, Conta conta);
     ConteudoPaginacao<AgendamentoResponseDTO> listarAgendamentosDeCondominio(Integer pageNumber, Integer pageSize,
                                                                              String sortBy, String sortOrder, UUID condominioId, Conta conta);
     AgendamentoResponseDTO alterarAgendamentoStatusEObservacao(UUID agendamentoUUID, AlterarAgendamentoDTO alterarAgendamentoDTO, Conta conta);
