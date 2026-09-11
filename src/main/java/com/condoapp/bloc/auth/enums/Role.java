@@ -9,5 +9,6 @@ public enum Role {
     public Boolean isSindico() {
         return this == Role.SINDICO;
     }
+    public Boolean isMorador() {return this == Role.MORADOR;}
 }
 
