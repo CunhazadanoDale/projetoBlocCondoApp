@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -31,12 +32,14 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     @Override
     public AgendamentoResponseDTO buscarPorUUID(UUID uuid, Conta conta) {
 
-        if (!validarSindico(conta)) {
+        Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
+                .orElseThrow( () -> new RuntimeException("Não encontrado"));
+
+        if (!validarSindico(conta) && !validarPertence(conta, agendamento.getEspaco().getCondominio().getUuid())
+                && !validarMoradorDonoDoAgendamento(agendamento, conta)) {
             throw new RuntimeException("Não possui autoridade para atualizar este espaço");
         }
 
-        Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
-                .orElseThrow( () -> new RuntimeException("Não encontrado"));
 
         return AgendamentoMapper.fromEntityToResponse(agendamento);
     }
@@ -78,7 +81,7 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     public ConteudoPaginacao<AgendamentoResponseDTO> listarAgendamentosDeCondominio(Integer pageNumber, Integer pageSize,
                                                                        String sortBy, String sortOrder, UUID condominioUUID, Conta conta) {
 
-        if (!validarSindico(conta)) {
+        if (!validarSindico(conta) && !validarPertence(conta, condominioUUID)) {
             throw new RuntimeException("Não possui autoridade para atualizar este espaço");
         }
 
@@ -102,12 +105,12 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     public AgendamentoResponseDTO alterarAgendamentoStatusEObservacao(UUID agendamentoUUID, AlterarAgendamentoDTO alterarAgendamentoDTO,
                                                                       Conta conta) {
 
-        if (!validarSindico(conta)) {
-            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
-        }
-
         Agendamento agendamentoFromDB = agendamentoRepository.findByUuid(agendamentoUUID)
                 .orElseThrow(() -> new RuntimeException("Agendamento não existe"));
+
+        if (!validarSindico(conta) && !validarPertence(conta, agendamentoFromDB.getEspaco().getCondominio().getUuid())) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
 
         agendamentoFromDB.setStatus(alterarAgendamentoDTO.getStatusAgendamento());
         agendamentoFromDB.setObservacao(alterarAgendamentoDTO.getObservacao());
@@ -119,12 +122,13 @@ public class AgendamentoServiceImpl implements AgendamentoService {
     @Transactional
     public void cancelarAgendamento(UUID uuid, Conta conta) {
 
-        if (!validarSindico(conta)) {
-            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
-        }
-
         Agendamento agendamento = agendamentoRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RuntimeException("agendamento não encontrado"));
+
+        if (!validarSindico(conta) && !validarPertence(conta, agendamento.getEspaco().getCondominio().getUuid())
+                && !validarMoradorDonoDoAgendamento(agendamento, conta)) {
+            throw new RuntimeException("Não possui autoridade para atualizar este espaço");
+        }
 
         agendamento.setStatus(StatusAgendamento.CANCELADO);
 
@@ -151,5 +155,26 @@ public class AgendamentoServiceImpl implements AgendamentoService {
                 .anyMatch(Role::isSindico);
 
         return temAutoridade;
+    }
+
+    private boolean validarPertence(Conta conta, UUID condominioUUID) {
+
+        if(conta.getMorador() == null || conta.getMorador().getCondominio() == null) {
+            return false;
+        }
+
+        return Objects.equals(conta.getMorador().getCondominio().getUuid(), condominioUUID);
+    }
+
+    private boolean validarMoradorDonoDoAgendamento(Agendamento agendamento, Conta conta) {
+        boolean ehMorador = conta.getAuthorities().stream()
+                .map(auth -> Role.valueOf(auth.getAuthority().replace("ROLE_", "")))
+                .anyMatch(Role::isMorador);
+
+        if (!ehMorador) {
+            return false;
+        }
+
+        return agendamento.getMorador().getMoradorId().equals(conta.getMorador().getMoradorId());
     }
 }
